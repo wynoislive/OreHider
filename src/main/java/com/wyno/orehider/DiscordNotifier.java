@@ -29,8 +29,7 @@ public class DiscordNotifier {
         String webhookUrl = plugin.getConfig().getString("discord.webhook-url");
         if (webhookUrl == null || webhookUrl.length() < 10) return;
 
-        // ASYNC EXECUTION
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Runnable sendTask = () -> {
             try {
                 String jsonInput = "{\"content\": \"" + escapeJson(message) + "\"}";
 
@@ -41,17 +40,28 @@ public class DiscordNotifier {
                         .POST(HttpRequest.BodyPublishers.ofString(jsonInput))
                         .build();
 
-                // Non-blocking send
-                httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding())
-                        .exceptionally(ex -> {
-                            plugin.getLogger().warning("Discord Webhook Failed: " + ex.getMessage());
-                            return null;
-                        });
+                if (plugin.isEnabled()) {
+                    // Non-blocking send during normal operation
+                    httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding())
+                            .exceptionally(ex -> {
+                                plugin.getLogger().warning("Discord Webhook Failed: " + ex.getMessage());
+                                return null;
+                            });
+                } else {
+                    // Blocking send during shutdown to ensure message goes out
+                    httpClient.send(request, HttpResponse.BodyHandlers.discarding());
+                }
 
             } catch (Exception e) {
-                plugin.getLogger().log(Level.WARNING, "Error building Discord request", e);
+                plugin.getLogger().log(Level.WARNING, "Error sending Discord notification", e);
             }
-        });
+        };
+
+        if (plugin.isEnabled()) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, sendTask);
+        } else {
+            sendTask.run();
+        }
     }
 
     private String escapeJson(String s) {
