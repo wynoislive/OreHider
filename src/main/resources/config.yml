@@ -1,0 +1,65 @@
+# ----------------------------------------------------------------------
+# OreHider v1.3 | Developed by Wyno
+# Professional Anti-Xray Management for Paper 1.21.1
+# ----------------------------------------------------------------------
+
+discord:
+  enabled: true
+  webhook-url: "YOUR_WEBHOOK_URL_HERE"
+  messages:
+    startup: "🟢 **OreHider** is now active. Anti-Xray protocols engaged."
+    shutdown: "🔴 **OreHider** has been disabled."
+    update: "🔄 **OreHider** configuration reloaded by {player}."
+    alert: "🚨 **X-RAY DETECTED**: {player} mined **{amount}**x {ore} in the last {time}s!"
+
+# GLOBAL SETTINGS
+# These settings are AUTO-APPLIED to 'paper-world-defaults.yml'.
+# They serve as the baseline for ALL worlds detected on the server.
+global:
+  enabled: true
+  engine-mode: 2
+  max-block-height: 64
+  update-radius: 2
+  lava-obscures: false
+  
+  hidden-blocks:
+    - copper_ore
+    - deepslate_copper_ore
+    - gold_ore
+    - deepslate_gold_ore
+    - iron_ore
+    - deepslate_iron_ore
+    - coal_ore
+    - deepslate_coal_ore
+    - lapis_ore
+    - deepslate_lapis_ore
+    - diamond_ore
+    - deepslate_diamond_ore
+    - redstone_ore
+    - deepslate_redstone_ore
+    - emerald_ore
+    - deepslate_emerald_ore
+
+# DETECTION HEURISTICS (Mining Alerts)
+alerts:
+  enabled: true
+  threshold: 5
+  time-window: 60
+  cancel-event: false
+
+# PER-WORLD OVERRIDES (Optional)
+# OreHider automatically detects all worlds.
+# You only need to list worlds here if you want DIFFERENT settings for them.
+# If a world is not listed here, it uses the 'global' settings above.
+worlds:
+  world_nether:
+    max-block-height: 128
+    hidden-blocks:
+      - ancient_debris
+      - nether_gold_ore
+      - nether_quartz_ore
+      - glowstone
+  world_the_end:
+    max-block-height: 256
+    hidden-blocks:
+      - end_stone

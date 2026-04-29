@@ -1,0 +1,16 @@
+name: OreHider
+version: '1.0.0'
+main: com.wyno.orehider.OreHider
+api-version: '1.21'
+prefix: OreHider
+authors: [Wyno]
+description: Advanced Ore Hiding and Anti-Xray Management.
+permissions:
+  orehider.admin:
+    description: Allows full control of OreHider settings
+    default: op
+commands:
+  orehider:
+    description: Manage OreHider configurations
+    usage: /orehider [reload|sync|status]
+    aliases: [oh, hide]
